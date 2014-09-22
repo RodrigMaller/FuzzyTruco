@@ -1,0 +1,51 @@
+FUNCTION_BLOCK truco
+
+VAR_INPUT
+	carta1 : REAL;
+	carta2 : REAL;
+	carta3 : REAL;
+END_VAR
+
+VAR_OUTPUT
+	mao : REAL;
+END_VAR
+
+FUZZIFY carta1
+	TERM baixo := (4, 1) (10.5, 0) ;
+	TERM medio := (7.5, 0) (10.5, 1) (13.5, 0) ;
+	TERM alto := (10.5, 0) (17, 1) ;
+END_FUZZIFY
+
+FUZZIFY carta2
+	TERM baixo := (4, 1) (10.5, 0) ;
+	TERM medio := (7.5, 0) (10.5, 1) (13.5, 0) ;
+	TERM alto := (10.5, 0) (17, 1) ;
+END_FUZZIFY
+
+FUZZIFY carta3
+	TERM baixo := (4, 1) (10.5, 0) ;
+	TERM medio := (7.5, 0) (10.5, 1) (13.5, 0) ;
+	TERM alto := (10.5, 0) (17, 1) ;
+END_FUZZIFY
+
+DEFUZZIFY mao
+	TERM ruim := (0, 1) (33, 0) ;
+	TERM medio := (17, 0) (33, 1) (42, 1) (58, 0) ;
+	TERM bom := (42, 0) (58, 1) (67, 1) (83, 0) ;
+	TERM muito_bom := (67, 0) (100, 1) ;
+	METHOD : COG;
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+	AND : MIN;
+	ACT : MIN;
+	ACCU : MAX;
+	
+	RULE 1 : IF carta1 IS baixo AND carta2 IS baixo AND carta3 IS baixo THEN mao IS ruim;
+	RULE 2 : IF carta1 IS medio AND carta2 IS medio AND carta3 IS medio THEN mao IS medio;
+	RULE 4 : IF carta1 IS medio AND carta2 IS alto AND carta3 IS alto THEN mao IS bom;
+	RULE 3 : IF carta1 IS alto AND carta2 IS alto AND carta3 IS alto THEN mao IS muito_bom;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
