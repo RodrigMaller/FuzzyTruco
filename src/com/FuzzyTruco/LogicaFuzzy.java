@@ -17,18 +17,19 @@ public class LogicaFuzzy {
         }
         
         // Show 
-        JFuzzyChart.get().chart(fis.getFunctionBlock("truco"));
+        //JFuzzyChart.get().chart(fis.getFunctionBlock("jogada"));
 
         // Set inputs
-        fis.setVariable("carta1", 12);
-        fis.setVariable("carta2", 13);
-        fis.setVariable("carta3", 14);
+        fis.setVariable("jogada", "carta_mais_alta", 8);
+        fis.setVariable("jogada", "carta_adversario", -13);
+        fis.setVariable("jogada", "resultado_parcial", 1);
+        fis.setVariable("jogada", "posicao", 0);
 
         // Evaluate
         fis.evaluate();
 
         // Show output variable's chart
-        Variable mao = fis.getFunctionBlock("truco").getVariable("mao");
+        Variable mao = fis.getFunctionBlock("jogada").getVariable("jogada");
         JFuzzyChart.get().chart(mao, mao.getDefuzzifier(), true);
 
         // Print ruleSet

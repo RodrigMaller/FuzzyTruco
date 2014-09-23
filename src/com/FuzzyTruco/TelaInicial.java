@@ -6,18 +6,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.SWT;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TrayItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.custom.CBanner;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Form;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.custom.SashForm;
 
 public class TelaInicial {
 
@@ -70,12 +63,18 @@ public class TelaInicial {
 					telaAuxilio.open();
 				}
 				catch (Exception exc) {
-					
+					MessageDialog.open(MessageDialog.ERROR, shell, "Error", "Erro ao entrar na tela de Auxilio", 0);
 				}
 			}
 		});
-		btnNewButton.setBounds(354, 82, 75, 25);
+		btnNewButton.setBounds(350, 264, 75, 25);
 		btnNewButton.setText("Auxilio");
+		
+		Group group = new Group(shell, SWT.NONE);
+		group.setBounds(163, 10, 267, 200);
+		
+		SashForm sashForm = new SashForm(shell, SWT.NONE);
+		sashForm.setBounds(36, 10, 121, 198);
 
 	}
 }
