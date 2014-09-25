@@ -1,19 +1,40 @@
 FUNCTION_BLOCK jogada
 
 VAR_INPUT
-	carta_mais_alta : REAL;
-//	carta_media : REAL;
-	//carta_mais_baixa : REAL;
-	carta_adversario : REAL;
+	/* Input Jogada */
+	carta_mais_alta   : REAL;
+	carta_adversario  : REAL;
 	resultado_parcial : REAL;
-	posicao : REAL;
+	posicao           : REAL;
+	
+	/* Input Reação */
+	//posicao           : REAL;
+	//carta_mais_alta   : REAL;
+	//resultado_parcial : REAL;
+	carta_media       : REAL;
+	carta_mais_baixa  : REAL;
+	pontuacao         : REAL;
+    carta_mesa        : REAL;
 END_VAR
 
 VAR_OUTPUT
 	 jogada : REAL;
+	 reacao : REAL;
 END_VAR
 
 FUZZIFY carta_mais_alta
+	TERM baixa := (4, 1) (10.5, 0) ;
+	TERM media := (7, 0) (10.5, 1) (14, 0) ;
+	TERM alta := (10.5, 0) (17, 1) ;
+END_FUZZIFY
+
+FUZZIFY carta_mais_baixa
+	TERM baixa := (4, 1) (10.5, 0) ;
+	TERM media := (7, 0) (10.5, 1) (14, 0) ;
+	TERM alta := (10.5, 0) (17, 1) ;
+END_FUZZIFY
+
+FUZZIFY carta_media
 	TERM baixa := (4, 1) (10.5, 0) ;
 	TERM media := (7, 0) (10.5, 1) (14, 0) ;
 	TERM alta := (10.5, 0) (17, 1) ;
@@ -34,6 +55,19 @@ END_FUZZIFY
 FUZZIFY posicao
 	TERM primeiro := 0 ;
 	TERM segundo := 1 ;
+END_FUZZIFY
+
+FUZZIFY carta_mesa
+	TERM baixa := (4, 1) (10.5, 0) ;
+	TERM media := (7, 0) (10.5, 1) (14, 0) ;
+	TERM alta := (10.5, 0) (17, 1) ;
+END_FUZZIFY
+
+FUZZIFY pontuacao
+	TERM truco := 3;
+	TERM seis  := 6;
+	TERM nove  := 9;
+	TERM doze  := 12;
 END_FUZZIFY
 
 DEFUZZIFY jogada
@@ -45,88 +79,6 @@ DEFUZZIFY jogada
 	DEFAULT := 100;
 END_DEFUZZIFY
 
-RULEBLOCK No2
-	AND : MIN;
-	ACT : MIN;
-	ACCU : MAX;
-	
-	RULE 1 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mais_alta IS alta THEN jogada IS muito_boa;
-	RULE 2 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mais_alta IS media THEN jogada IS boa;
-	RULE 3 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mais_alta IS baixa THEN jogada IS ruim;
-	RULE 4 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mais_alta IS alta THEN jogada IS boa;
-	RULE 5 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mais_alta IS media THEN jogada IS media;
-	RULE 6 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mais_alta IS baixa THEN jogada IS ruim;
-	RULE 7 : IF posicao IS primeiro AND resultado_parcial IS ruim AND carta_mais_alta IS alta THEN jogada IS boa;
-	RULE 8 : IF posicao IS primeiro AND resultado_parcial IS ruim AND carta_mais_alta IS media THEN jogada IS media;
-	RULE 9 : IF posicao IS primeiro AND resultado_parcial IS ruim AND carta_mais_alta IS baixa THEN jogada IS ruim;
-//	RULE 10 : TODO;
-	RULE 11 : IF posicao IS segundo AND resultado_parcial IS bom AND carta_adversario IS maior THEN jogada IS ruim;
-	RULE 12 : IF posicao IS segundo AND resultado_parcial IS bom AND carta_adversario IS igual THEN jogada IS boa;
-	RULE 13 : IF posicao IS segundo AND resultado_parcial IS bom AND carta_adversario IS menor THEN jogada IS muito_boa;
-	RULE 14 : IF posicao IS segundo AND resultado_parcial IS medio AND carta_adversario IS maior THEN jogada IS ruim;
-	RULE 15 : IF posicao IS segundo AND resultado_parcial IS medio AND carta_adversario IS igual THEN jogada IS media;
-	RULE 16 : IF posicao IS segundo AND resultado_parcial IS medio AND carta_adversario IS menor THEN jogada IS boa;
-	RULE 17 : IF posicao IS segundo AND resultado_parcial IS ruim AND carta_adversario IS maior THEN jogada IS ruim;
-	RULE 18 : IF posicao IS segundo AND resultado_parcial IS ruim AND carta_adversario IS igual THEN jogada IS media;
-	RULE 19 : IF posicao IS segundo AND resultado_parcial IS ruim AND carta_adversario IS menor THEN jogada IS boa;
-	 
-	
-END_RULEBLOCK
-
-END_FUNCTION_BLOCK
-
-FUNCTION_BLOCK reacao
-
-VAR_INPUT
-	posicao         : REAL;
-	pontuacao       : REAL;
-	carta_mais_alta : REAL;
-    carta_mesa : REAL;
-	//carta_mais_baixa : REAL;
-	carta_adversario : REAL;
-	resultado_parcial : REAL;
-END_VAR
-
-VAR_OUTPUT
-	 reacao : REAL;
-END_VAR
-
-FUZZIFY pontuacao
-	TERM truco := 3;
-	TERM seis  := 6;
-	TERM nove  := 9;
-	TERM doze  := 12;
-END_FUZZIFY
-
-FUZZIFY carta_mais_alta
-	TERM baixa := (4, 1) (10.5, 0) ;
-	TERM media := (7, 0) (10.5, 1) (14, 0) ;
-	TERM alta := (10.5, 0) (17, 1) ;
-END_FUZZIFY
-
-FUZZIFY carta_mesa
-	TERM baixa := (4, 1) (10.5, 0) ;
-	TERM media := (7, 0) (10.5, 1) (14, 0) ;
-	TERM alta := (10.5, 0) (17, 1) ;
-END_FUZZIFY
-
-FUZZIFY carta_adversario
-	TERM maior := (0, 0) (13, 1) ;
-	TERM igual := (-3, 0) (0,1) (3, 0) ; // A Decidir o "Igual"
-	TERM menor := (-13, 1) (0,0) ;
-END_FUZZIFY
-
-FUZZIFY resultado_parcial
-	TERM ruim := (0, 1) (0.5, 0) ;
-	TERM medio := (0, 0) (0.5, 1) (1, 0) ;
-	TERM bom := (0.5, 0) (1, 1) ;
-END_FUZZIFY
-
-FUZZIFY posicao
-	TERM primeiro := 0 ;
-	TERM segundo := 1 ;
-END_FUZZIFY
-
 DEFUZZIFY reacao
 	TERM aumenta := (7, 0) (10, 1);
 	TERM aceita := (3, 0) (4, 1) (7, 1) (8, 0);
@@ -135,16 +87,134 @@ DEFUZZIFY reacao
 	DEFAULT := 100;
 END_DEFUZZIFY
 
-RULEBLOCK No2
+RULEBLOCK Jogada
 	AND : MIN;
 	ACT : MIN;
 	ACCU : MAX;
 	
-	RULE 1 : IF posicao IS primeiro AND (resultado_parcial IS bom OR resultado_parcial IS medio) AND carta_mesa IS alta AND carta_mais_alta IS alta THEN reacao IS aumenta;
-	RULE 2 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mesa IS alta AND carta_mais_alta IS media THEN reacao IS aceita;
-	RULE 3 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mesa IS alta AND carta_mais_alta IS baixa THEN reacao IS aceita;
-	RULE 4 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mesa IS alta AND carta_mais_alta IS baixa THEN reacao IS aceita;
-		
+	//posição = primeiro
+	RULE 1 : IF posicao IS primeiro AND resultado_parcial IS bom   AND carta_mais_alta IS alta  THEN jogada IS muito_boa;
+	RULE 2 : IF posicao IS primeiro AND resultado_parcial IS bom   AND carta_mais_alta IS media THEN jogada IS boa;
+	RULE 3 : IF posicao IS primeiro AND resultado_parcial IS bom   AND carta_mais_alta IS baixa THEN jogada IS ruim;
+	
+	RULE 4 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mais_alta IS alta  THEN jogada IS boa;
+	RULE 5 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mais_alta IS media THEN jogada IS media;
+	RULE 6 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mais_alta IS baixa THEN jogada IS ruim;
+	
+	RULE 7 : IF posicao IS primeiro AND resultado_parcial IS ruim  AND carta_mais_alta IS alta  THEN jogada IS boa;
+	RULE 8 : IF posicao IS primeiro AND resultado_parcial IS ruim  AND carta_mais_alta IS media THEN jogada IS media;
+	RULE 9 : IF posicao IS primeiro AND resultado_parcial IS ruim  AND carta_mais_alta IS baixa THEN jogada IS ruim;
+	
+	// posição = segundo
+	RULE 11 : IF posicao IS segundo AND resultado_parcial IS bom   AND carta_adversario IS maior THEN jogada IS ruim;
+	RULE 12 : IF posicao IS segundo AND resultado_parcial IS bom   AND carta_adversario IS igual THEN jogada IS boa;
+	RULE 13 : IF posicao IS segundo AND resultado_parcial IS bom   AND carta_adversario IS menor THEN jogada IS muito_boa;
+	
+	RULE 14 : IF posicao IS segundo AND resultado_parcial IS medio AND carta_adversario IS maior THEN jogada IS ruim;
+	RULE 15 : IF posicao IS segundo AND resultado_parcial IS medio AND carta_adversario IS igual THEN jogada IS media;
+	RULE 16 : IF posicao IS segundo AND resultado_parcial IS medio AND carta_adversario IS menor THEN jogada IS boa;
+	
+	RULE 17 : IF posicao IS segundo AND resultado_parcial IS ruim  AND carta_adversario IS maior THEN jogada IS ruim;
+	RULE 18 : IF posicao IS segundo AND resultado_parcial IS ruim  AND carta_adversario IS igual THEN jogada IS media;
+	RULE 19 : IF posicao IS segundo AND resultado_parcial IS ruim  AND carta_adversario IS menor THEN jogada IS boa;	 	
+END_RULEBLOCK
+
+RULEBLOCK Reacao
+	AND : MIN;
+	ACT : MIN;
+	ACCU : MAX;
+	
+	// posição = primeiro / resultado_parcial = bom
+	RULE 1 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mesa IS alta  AND carta_mais_alta IS alta  THEN reacao IS aumenta;
+	RULE 2 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mesa IS alta  AND carta_mais_alta IS media THEN reacao IS aceita;
+	RULE 3 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mesa IS alta  AND carta_mais_alta IS baixa THEN reacao IS aceita;
+	
+	RULE 4 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mesa IS media AND carta_mais_alta IS alta  THEN reacao IS aceita;
+	RULE 5 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mesa IS media AND carta_mais_alta IS media THEN reacao IS corre;
+	RULE 6 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mesa IS media AND carta_mais_alta IS baixa THEN reacao IS corre;
+	
+	RULE 7 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mesa IS baixa AND carta_mais_alta IS alta  THEN reacao IS aceita;
+	RULE 8 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mesa IS baixa AND carta_mais_alta IS media THEN reacao IS corre;
+	RULE 9 : IF posicao IS primeiro AND resultado_parcial IS bom AND carta_mesa IS baixa AND carta_mais_alta IS baixa THEN reacao IS corre;
+	
+	// posição = primeiro / resultado_parcial = medio
+	RULE 1 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mesa IS alta  AND carta_mais_alta IS alta  THEN reacao IS aceita;
+	RULE 2 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mesa IS alta  AND carta_mais_alta IS media THEN reacao IS corre;
+	RULE 3 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mesa IS alta  AND carta_mais_alta IS baixa THEN reacao IS corre;
+	
+	RULE 4 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mesa IS media AND carta_mais_alta  IS alta 
+	                                                                                       AND carta_mais_baixa IS alta  THEN reacao IS aumenta;
+	RULE 4 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mesa IS media AND carta_mais_alta  IS alta 
+	                                													   AND carta_mais_baixa IS media THEN reacao IS aceita;
+	RULE 4 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mesa IS media AND carta_mais_alta  IS alta 
+	                                													   AND carta_mais_baixa IS baixa THEN reacao IS corre;
+	                                                               
+	RULE 5 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mesa IS media AND carta_mais_alta IS media THEN reacao IS corre;
+	RULE 6 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mesa IS media AND carta_mais_alta IS baixa THEN reacao IS corre;
+	
+	RULE 7 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mesa IS baixa AND carta_mais_alta  IS alta 
+	                                                                                       AND carta_mais_baixa IS alta  THEN reacao IS aceita;
+	RULE 7 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mesa IS baixa AND carta_mais_alta  IS alta 
+	                                													   AND carta_mais_baixa IS media THEN reacao IS corre;
+	RULE 7 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mesa IS baixa AND carta_mais_alta  IS alta 
+	                                													   AND carta_mais_baixa IS baixa THEN reacao IS corre;
+	                                													   
+	RULE 8 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mesa IS baixa AND carta_mais_alta IS media THEN reacao IS corre;
+	RULE 9 : IF posicao IS primeiro AND resultado_parcial IS medio AND carta_mesa IS baixa AND carta_mais_alta IS baixa THEN reacao IS corre;
+	
+	// posição = primeiro / resultado_parcial = ruim
+	RULE 1 : IF posicao IS primeiro AND resultado_parcial IS ruim AND carta_mesa IS alta  AND carta_mais_alta IS alta  THEN reacao IS aceita;
+	RULE 2 : IF posicao IS primeiro AND resultado_parcial IS ruim AND carta_mesa IS alta  AND carta_mais_alta IS media THEN reacao IS aceita;
+	RULE 3 : IF posicao IS primeiro AND resultado_parcial IS ruim AND carta_mesa IS alta  AND carta_mais_alta IS baixa THEN reacao IS corre;
+	
+	RULE 4 : IF posicao IS primeiro AND resultado_parcial IS ruim AND carta_mesa IS media AND carta_mais_alta IS alta  THEN reacao IS corre;
+	RULE 5 : IF posicao IS primeiro AND resultado_parcial IS ruim AND carta_mesa IS media AND carta_mais_alta IS media THEN reacao IS corre;
+	RULE 6 : IF posicao IS primeiro AND resultado_parcial IS ruim AND carta_mesa IS media AND carta_mais_alta IS baixa THEN reacao IS corre;
+	
+	RULE 7 : IF posicao IS primeiro AND resultado_parcial IS ruim AND carta_mesa IS baixa AND carta_mais_alta IS alta  THEN reacao IS corre;
+	RULE 8 : IF posicao IS primeiro AND resultado_parcial IS ruim AND carta_mesa IS baixa AND carta_mais_alta IS media THEN reacao IS corre;
+	RULE 9 : IF posicao IS primeiro AND resultado_parcial IS ruim AND carta_mesa IS baixa AND carta_mais_alta IS baixa THEN reacao IS corre;
+	
+	// posição = segundo / resultado_parcial = bom
+	RULE 1 : IF posicao IS segundo AND resultado_parcial IS bom AND carta_mais_alta IS alta  AND carta_mais_baixa IS alta  THEN reacao IS aumenta;
+	RULE 2 : IF posicao IS segundo AND resultado_parcial IS bom AND carta_mais_alta IS alta  AND carta_mais_baixa IS media THEN reacao IS aceita;
+	RULE 3 : IF posicao IS segundo AND resultado_parcial IS bom AND carta_mais_alta IS alta  AND carta_mais_baixa IS baixa THEN reacao IS aceita;
+	
+	RULE 5 : IF posicao IS segundo AND resultado_parcial IS bom AND carta_mais_alta IS media AND carta_mais_baixa IS media THEN reacao IS corre;
+	RULE 6 : IF posicao IS segundo AND resultado_parcial IS bom AND carta_mais_alta IS media AND carta_mais_baixa IS baixa THEN reacao IS corre;
+	
+	RULE 9 : IF posicao IS segundo AND resultado_parcial IS bom AND carta_mais_alta IS baixa AND carta_mais_baixa IS baixa THEN reacao IS corre;
+	
+	// posição = segundo / resultado_parcial = medio
+	RULE 1 : IF posicao IS segundo AND resultado_parcial IS medio AND carta_mais_alta IS alta AND carta_media IS alta 
+																							  AND carta_mais_baixa IS alta THEN reacao IS aumenta;
+	RULE 2 : IF posicao IS segundo AND resultado_parcial IS medio AND carta_mais_alta IS alta AND carta_media IS alta 
+																							  AND carta_mais_baixa IS media THEN reacao IS aumenta;
+	RULE 3 : IF posicao IS segundo AND resultado_parcial IS medio AND carta_mais_alta IS alta AND carta_media IS alta 
+																							  AND carta_mais_baixa IS baixa THEN reacao IS aceita;
+	
+	RULE 1 : IF posicao IS segundo AND resultado_parcial IS medio AND carta_mais_alta IS alta AND carta_media IS media 
+																							  AND carta_mais_baixa IS media THEN reacao IS corre;
+	RULE 2 : IF posicao IS segundo AND resultado_parcial IS medio AND carta_mais_alta IS alta AND carta_media IS media 
+																							  AND carta_mais_baixa IS baixa THEN reacao IS corre;
+																							  
+	RULE 2 : IF posicao IS segundo AND resultado_parcial IS medio AND carta_mais_alta IS alta AND carta_media IS baixa 
+																							  AND carta_mais_baixa IS baixa THEN reacao IS corre;
+																							  
+	RULE 4 : IF posicao IS segundo AND resultado_parcial IS medio AND carta_mais_alta IS media THEN reacao IS corre;
+	
+	RULE 4 : IF posicao IS segundo AND resultado_parcial IS medio AND carta_mais_alta IS baixa THEN reacao IS corre;
+	
+	// posição = segundo / resultado_parcial = ruim
+	RULE 1 : IF posicao IS segundo AND resultado_parcial IS ruim AND carta_mais_alta IS alta  AND carta_mais_baixa IS alta  THEN reacao IS aceita;
+	RULE 2 : IF posicao IS segundo AND resultado_parcial IS ruim AND carta_mais_alta IS alta  AND carta_mais_baixa IS media THEN reacao IS aceita;
+	RULE 3 : IF posicao IS segundo AND resultado_parcial IS ruim AND carta_mais_alta IS alta  AND carta_mais_baixa IS baixa THEN reacao IS corre;
+	
+	RULE 5 : IF posicao IS segundo AND resultado_parcial IS ruim AND carta_mais_alta IS media AND carta_mais_baixa IS media THEN reacao IS corre;
+	RULE 6 : IF posicao IS segundo AND resultado_parcial IS ruim AND carta_mais_alta IS media AND carta_mais_baixa IS baixa THEN reacao IS corre;
+	
+	RULE 9 : IF posicao IS segundo AND resultado_parcial IS ruim AND carta_mais_alta IS baixa AND carta_mais_baixa IS baixa THEN reacao IS corre;
+	
 END_RULEBLOCK
 
 END_FUNCTION_BLOCK

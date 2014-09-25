@@ -29,8 +29,8 @@ public class LogicaFuzzy {
         fis.evaluate();
 
         // Show output variable's chart
-        Variable mao = fis.getFunctionBlock("jogada").getVariable("jogada");
-        JFuzzyChart.get().chart(mao, mao.getDefuzzifier(), true);
+        Variable jogada = fis.getFunctionBlock("jogada").getVariable("jogada");
+        JFuzzyChart.get().chart(jogada, jogada.getDefuzzifier(), true);
 
         // Print ruleSet
         System.out.println(fis);
